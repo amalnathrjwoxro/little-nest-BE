@@ -1,0 +1,72 @@
+name: Deploy to Lightsail
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-south-1
+  SERVICE_NAME: container-service-1
+  CONTAINER_NAME: little-nest-be
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Install Lightsail CLI plugin
+        run: |
+          sudo curl "https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl" -o "/usr/local/bin/lightsailctl"
+          sudo chmod +x /usr/local/bin/lightsailctl
+
+      - name: Build Docker image
+        run: docker build -t ${{ env.CONTAINER_NAME }}:latest .
+
+      - name: Push image to Lightsail
+        id: push
+        run: |
+          PUSH_OUTPUT=$(aws lightsail push-container-image \
+            --service-name ${{ env.SERVICE_NAME }} \
+            --label ${{ env.CONTAINER_NAME }} \
+            --image ${{ env.CONTAINER_NAME }}:latest)
+          echo "$PUSH_OUTPUT"
+          IMAGE_REF=$(echo "$PUSH_OUTPUT" | grep -oP '(?<=Refer to this image as ")[^"]+')
+          echo "image_ref=$IMAGE_REF" >> "$GITHUB_OUTPUT"
+
+      - name: Create deployment
+        run: |
+          aws lightsail create-container-service-deployment \
+            --service-name ${{ env.SERVICE_NAME }} \
+            --containers "{
+              \"${{ env.CONTAINER_NAME }}\": {
+                \"image\": \"${{ steps.push.outputs.image_ref }}\",
+                \"ports\": { \"3000\": \"HTTP\" },
+                \"environment\": {
+                  \"MONGODB_URI\": \"${{ secrets.MONGODB_URI }}\",
+                  \"PAYLOAD_SECRET\": \"${{ secrets.PAYLOAD_SECRET }}\",
+                  \"S3_BUCKET\": \"${{ secrets.S3_BUCKET }}\",
+                  \"S3_REGION\": \"${{ secrets.S3_REGION }}\",
+                  \"S3_ACCESS_KEY_ID\": \"${{ secrets.S3_ACCESS_KEY_ID }}\",
+                  \"S3_SECRET_ACCESS_KEY\": \"${{ secrets.S3_SECRET_ACCESS_KEY }}\"
+                }
+              }
+            }" \
+            --public-endpoint "{
+              \"containerName\": \"${{ env.CONTAINER_NAME }}\",
+              \"containerPort\": 3000,
+              \"healthCheck\": {
+                \"path\": \"/admin\",
+                \"intervalSeconds\": 30
+              }
+            }"
