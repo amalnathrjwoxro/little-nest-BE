@@ -28,11 +28,11 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || '',
     cors: [
     'http://localhost:3000',
-    'https://your-app.amplifyapp.com', //Amplify URL once deployed
+    'https://main.d17cwniv580g4t.amplifyapp.com/', 
   ],
   csrf: [
     'http://localhost:3000',
-    'https://your-app.amplifyapp.com',
+    'https://main.d17cwniv580g4t.amplifyapp.com/',
   ],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
