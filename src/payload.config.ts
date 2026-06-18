@@ -26,6 +26,14 @@ export default buildConfig({
   collections: [Users, Media, ContactForm, Blogs, Products],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
+    cors: [
+    'http://localhost:3000',
+    'https://your-app.amplifyapp.com', //Amplify URL once deployed
+  ],
+  csrf: [
+    'http://localhost:3000',
+    'https://your-app.amplifyapp.com',
+  ],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
