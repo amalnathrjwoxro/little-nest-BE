@@ -5,7 +5,7 @@ export const Users: CollectionConfig = {
 
   auth: {
     cookies: {
-      sameSite: "None",
+      sameSite: "Lax",
       secure: true,
     },
   },
