@@ -14,18 +14,16 @@ export const Videos: CollectionConfig = {
     useAsTitle: 'title',
   },
 
-  upload: {
-    mimeTypes: [
-      'video/mp4',
-      'video/webm',
-      'video/quicktime', 
-    ],
-  },
-
   fields: [
     {
       name: 'title',
       type: 'text',
+      required: true,
+    },
+    {
+      name: 'video',
+      type: 'upload',
+      relationTo: 'media',
       required: true,
     },
   ],
