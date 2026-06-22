@@ -4,11 +4,11 @@ export const Users: CollectionConfig = {
   slug: 'users',
 
   auth: {
-    cookies: {
-      sameSite: "Lax",
-      secure: true,
-    },
+  cookies: {
+    sameSite: 'None',
+    secure: true,
   },
+},
 
   admin: {
     useAsTitle: 'email',
