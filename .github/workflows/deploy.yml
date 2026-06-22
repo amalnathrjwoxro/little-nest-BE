@@ -53,7 +53,7 @@ jobs:
                 \"image\": \"${{ steps.push.outputs.image_ref }}\",
                 \"ports\": { \"3000\": \"HTTP\" },
                 \"environment\": {
-                  \"MONGODB_URI\": \"${{ secrets.MONGODB_URI }}\",
+                  \"DATABASE_URL\": \"${{ secrets.DATABASE_URL }}\",
                   \"PAYLOAD_SECRET\": \"${{ secrets.PAYLOAD_SECRET }}\",
                   \"S3_BUCKET\": \"${{ secrets.S3_BUCKET }}\",
                   \"S3_REGION\": \"${{ secrets.S3_REGION }}\",
