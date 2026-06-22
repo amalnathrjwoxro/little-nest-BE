@@ -1,5 +1,4 @@
 import type { CollectionConfig } from 'payload'
-import path from 'path'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -12,32 +11,38 @@ export const Media: CollectionConfig = {
   },
 
   upload: {
-    //staticDir: path.resolve("public/media"), // stored in /public/media
+    mimeTypes: [
+      'image/png',
+      'image/jpeg',
+      'image/webp',
+      'video/mp4',
+      'video/webm',
+      'video/quicktime', // .mov
+    ],
+
     imageSizes: [
       {
         name: 'thumbnail',
         width: 400,
         height: 300,
-        position: 'centre',
+        position: 'center',
       },
       {
         name: 'card',
         width: 768,
         height: 512,
-        position: 'centre',
+        position: 'center',
       },
     ],
+
     adminThumbnail: 'thumbnail',
-    mimeTypes: ['image/png', 'image/jpeg', 'image/webp'],
   },
 
   fields: [
     {
       name: 'alt',
       type: 'text',
-
-      
-      required: true,
+      required: false, // videos won't need alt text
       label: 'Alt text',
     },
   ],

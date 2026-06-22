@@ -11,6 +11,8 @@ import { Media } from './collections/Media'
 import { ContactForm } from './collections/Contactform'
 import { Blogs } from './collections/Blogs'
 import { Products } from './collections/Products'
+import { Videos } from './collections/Videos'
+
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -23,15 +25,17 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, ContactForm, Blogs, Products],
+  collections: [Users, Media, ContactForm, Blogs, Products, Videos],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
     cors: [
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://main.d17cwniv580g4t.amplifyapp.com', 
   ],
   csrf: [
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://main.d17cwniv580g4t.amplifyapp.com',
   ],
   typescript: {
